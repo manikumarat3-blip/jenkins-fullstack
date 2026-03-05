@@ -1,19 +1,13 @@
+
 pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = 'dockerhub-creds'
-        FRONTEND_IMAGE = 'yourdockerhub/frontend'
-        BACKEND_IMAGE = 'yourdockerhub/backend'
+        FRONTEND_IMAGE = "yourdockerhubusername/frontend-app"
+        BACKEND_IMAGE = "yourdockerhubusername/backend-app"
     }
 
     stages {
-
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/manikumarat3-blip/jenkins-fullstack.git'
-            }
-        }
 
         stage('Build Backend Image') {
             steps {
@@ -29,8 +23,11 @@ pipeline {
 
         stage('Login DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
-                usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
                     sh 'echo $PASS | docker login -u $USER --password-stdin'
                 }
             }
@@ -56,5 +53,6 @@ pipeline {
                 '''
             }
         }
+
     }
 }
